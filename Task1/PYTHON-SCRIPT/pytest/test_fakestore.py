@@ -22,6 +22,28 @@ def test_category_mens_clothing():
     mens_clothing = [item for item in data if item["category"] == "men's clothing"]
     assert len(mens_clothing) > 0, "No se encontraron productos en la categoría 'men's clothing'"
 
+# # Test to verify that each "men's clothing" item contains the necessary properties
+def test_mens_clothing_item_properties():
+    response = requests.get(BASE_URL)
+    data = response.json()
+    mens_clothing = [item for item in data if item["category"] == "men's clothing"]
+
+    for item in mens_clothing:
+        assert "id" in item, "Falta la propiedad 'id'"
+        assert "title" in item, "Falta la propiedad 'title'"
+        assert "price" in item, "Falta la propiedad 'price'"
+        assert "category" in item, "Falta la propiedad 'category'"
+        assert "description" in item, "Falta la propiedad 'description'"
+        assert "image" in item, "Falta la propiedad 'image'"
+
+# Test to verify that all "men's clothing" products have a price greater than 0
+def test_mens_clothing_item_prices():
+    response = requests.get(BASE_URL)
+    data = response.json()
+    mens_clothing = [item for item in data if item["category"] == "men's clothing"]
+
+    for item in mens_clothing:
+        assert item["price"] > 0, f"El producto con IDs {item['id']} tiene un precio no válido: {item['price']}"
 
 # Run the tests with pytest
 if __name__ == "__main__":
