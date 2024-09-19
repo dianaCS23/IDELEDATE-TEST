@@ -1,0 +1,223 @@
+{
+	"info": {
+		"_postman_id": "3b8bd8d9-f0ec-4099-bac8-7da531503b72",
+		"name": "API TEST",
+		"description": "The following API test cases focus on validating various aspects of API functionality, particularly in handling both valid and invalid requests. These tests ensure that the API correctly processes requests by verifying response status codes, error messages, response times, and the presence of necessary data in the response body.\n\nThe tests cover scenarios such as:\n\n- Verifying successful responses with proper status codes.\n- Checking for appropriate error handling when data is invalid or missing.\n- Ensuring performance benchmarks are met through response time validations.\n- Confirming that the API returns the correct error messages and that essential properties exist within the data.\n    \n\nThis comprehensive approach ensures the reliability, performance, and user-friendliness of the API when interacting with clients.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6013302"
+	},
+	"item": [
+		{
+			"name": "List All Products",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Status Code Verification\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"//Response Time Verification\r",
+							"pm.test(\"Response time is less than 700ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(800);\r",
+							"});\r",
+							"//Verification of the Existence of the Category\r",
+							"pm.test(\"Contains at least one item with category 'men's clothing'\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    const menClothingItems = jsonData.filter(item => item.category === \"men's clothing\");\r",
+							"    pm.expect(menClothingItems.length).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"//Specific Data Verification\r",
+							"pm.test(\"Each 'men's clothing' item has necessary properties\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    const menClothingItems = jsonData.filter(item => item.category === \"men's clothing\");\r",
+							"    \r",
+							"    menClothingItems.forEach(item => {\r",
+							"        pm.expect(item).to.have.property('id');\r",
+							"        pm.expect(item).to.have.property('title');\r",
+							"        pm.expect(item).to.have.property('price');\r",
+							"        pm.expect(item).to.have.property('category');\r",
+							"        pm.expect(item).to.have.property('description');\r",
+							"        pm.expect(item).to.have.property('image');\r",
+							"    });\r",
+							"});\r",
+							"//Price Validation in the \"men's clothing\" Category\r",
+							"pm.test(\"All 'men's clothing' items have a price greater than 0\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    const menClothingItems = jsonData.filter(item => item.category === \"men's clothing\");\r",
+							"\r",
+							"    menClothingItems.forEach(item => {\r",
+							"        pm.expect(item.price).to.be.above(0);\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://fakestoreapi.com/products",
+					"protocol": "https",
+					"host": [
+						"fakestoreapi",
+						"com"
+					],
+					"path": [
+						"products"
+					]
+				},
+				"description": "1. **Status Code Verification**  \n    This test checks whether the API returns the correct HTTP status code, ensuring that the response code is 200 (OK). If the status is anything other than 200, the test will fail.\n    \n2. **Response Time Verification**  \n    This test ensures that the API responds within a specified time frame, in this case, less than 800ms. This is useful for evaluating the performance of the API.\n    \n3. **Verification of the Existence of the Category**  \n    This test verifies whether the response contains at least one item in the category \"men's clothing\". It ensures the data integrity of specific categories in the API's response.\n    \n4. **Specific Data Verification**  \n    This test checks that every item in the \"men's clothing\" category contains the required properties: id, title, price, category, description, and image. This ensures that all necessary data is present.\n    \n5. **Price Validation in the 'Men's Clothing' Category**  \n    This test validates that all items in the \"men's clothing\" category have a price greater than 0, ensuring no items are listed for free or with incorrect pricing."
+			},
+			"response": []
+		},
+		{
+			"name": "Update Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify that the status code is 400 for an invalid update\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"// Verify that the error message is present\r",
+							"pm.test(\"Error message is correct\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql(\"Invalid price. Price cannot be negative.\");\r",
+							"});\r",
+							"\r",
+							"// Validate that the response time is less than 500 ms\r",
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"price\": -20\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/products/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"products",
+						"1"
+					]
+				},
+				"description": "1. **Invalid Update - Status Code Verification**  \n    This test ensures that when an invalid update request is made (e.g., sending invalid data), the API returns a 400 (Bad Request) status code. This verifies that the API properly handles invalid input.\n    \n2. **Error Message Verification**  \n    This test checks that the API returns the correct error message when an invalid update is attempted. In this case, the test expects the error message to inform the user that the price cannot be negative.\n    \n3. **Response Time Verification for Invalid Update**  \n    This test ensures that the API responds in less than 500ms when handling an invalid update. Performance testing on invalid requests ensures that the API handles errors efficiently."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify that the status code is 400 for a POST with missing data\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"// Verify that the error message is correct\r",
+							"pm.test(\"Error message is correct\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql(\"Title and price are required.\");\r",
+							"});\r",
+							"\r",
+							"// Validar que el cuerpo de la respuesta contenga un mensaje claro\r",
+							"pm.test(\"Response contains error message\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"message\");\r",
+							"});\r",
+							"\r",
+							"// Validar que el tiempo de respuesta sea menor a 500 ms\r",
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"\",\r\n    \"price\": \"\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/products/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"products",
+						""
+					]
+				},
+				"description": "1. **POST with Missing Data - Status Code Verification**  \n    This test checks that when required data is missing in a POST request, the API returns a 400 (Bad Request) status code, ensuring that the API correctly handles incomplete requests.\n    \n2. **Error Message Verification for Missing Data**  \n    This test verifies that the error message returned by the API clearly states that required fields, such as Title and price, are missing. This helps ensure that the API communicates issues effectively to the client.\n    \n3. **Clear Error Message in Response Body**  \n    This test ensures that the response body contains a clear error message, verifying that the API provides helpful feedback when data is missing from the request.\n    \n4. **Response Time Verification for Missing Data**  \n    This test checks that the API response time is less than 500ms when handling a request with missing data, ensuring that the server responds quickly even when errors occur."
+			},
+			"response": []
+		}
+	]
+}
