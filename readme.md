@@ -14,6 +14,8 @@ My name's Diana Cuellar. I'm a Software Engineer with 1.5+ years of developing e
 - Highly motivated with good communication and problem-solving skills.
 - Ability to manage deadlines and experience in several areas.
 
+I look forward to any feedback and hope to hear from you soon.
+
 Thanks,  
 DC.
 
@@ -40,6 +42,19 @@ IDELEGATE-TEST/
 │       ├── test_api.py
 │       ├── test_fakestore.py
 │       └── report.html
+│
+├── test2.sikuli/
+│   ├── images/
+│   ├── readme.md
+│   └── test2.py
+│
+└── Task2(bonus)/
+    └── seleniumAutomatization/
+        ├── Performance.py
+        ├── automatization.py
+        ├── finderror.py
+        └── README.md
+
 ```
 
 This structure helps in organizing the different testing methodologies and associated documentation clearly.
